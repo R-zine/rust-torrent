@@ -17,7 +17,7 @@ src/
 ## Running
 
 ```bash
-cargo run -- ./torrents/#torrent_path#
+cargo run -- #torrent_path#
 ```
 
 The client will:
