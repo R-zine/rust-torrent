@@ -16,10 +16,7 @@ pub struct AnnounceRequest {
     pub compact: bool,
 }
 
-pub fn build_announce_url(
-    tracker_url: &str,
-    req: &AnnounceRequest,
-) -> String {
+pub fn build_announce_url(tracker_url: &str, req: &AnnounceRequest) -> String {
     let mut url = String::new();
 
     url.push_str(tracker_url);

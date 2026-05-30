@@ -1,23 +1,16 @@
+pub mod bitfield;
 pub mod connection;
 pub mod handshake;
-pub mod protocol;
-pub mod bitfield;
 pub mod manager;
+pub mod protocol;
 
 use std::sync::Arc;
 
-use tokio::{
-    sync::Mutex,
-    task,
-};
+use tokio::{sync::Mutex, task};
 
 use crate::download::manager::DownloadManager;
 
-use self::{
-    connection::PeerConnection,
-    handshake::Handshake,
-    manager::PeerManager,
-};
+use self::{connection::PeerConnection, handshake::Handshake, manager::PeerManager};
 
 pub type SharedPeerManager = Arc<Mutex<PeerManager>>;
 pub type SharedDownloadManager = Arc<Mutex<DownloadManager>>;
@@ -40,29 +33,13 @@ pub async fn connect_to_peers(
         let port = peer.port;
 
         let handle = task::spawn(async move {
-            match peer
-                .connect_and_handshake(
-                    hs,
-                    pm,
-                    dm,
-                )
-                .await
-            {
+            match peer.connect_and_handshake(hs, pm, dm).await {
                 Ok(_) => {
-                    println!(
-                        "connected to {}:{}",
-                        ip,
-                        port
-                    );
+                    println!("connected to {}:{}", ip, port);
                 }
 
                 Err(e) => {
-                    println!(
-                        "failed {}:{} -> {}",
-                        ip,
-                        port,
-                        e
-                    );
+                    println!("failed {}:{} -> {}", ip, port, e);
                 }
             }
         });

@@ -8,6 +8,7 @@ pub struct ParsedValue {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum Bencode {
     Integer(i64),
     String(Vec<u8>),
@@ -16,18 +17,9 @@ pub enum Bencode {
 }
 
 impl Bencode {
-    pub fn as_dictionary(
-    &self,
-) -> Option<&HashMap<String, ParsedValue>> {
-    match self {
-        Bencode::Dictionary(dict) => Some(dict),
-        _ => None,
-    }
-}
-
-    pub fn as_string(&self) -> Option<&[u8]> {
+    pub fn as_dictionary(&self) -> Option<&HashMap<String, ParsedValue>> {
         match self {
-            Bencode::String(bytes) => Some(bytes),
+            Bencode::Dictionary(dict) => Some(dict),
             _ => None,
         }
     }
@@ -51,11 +43,7 @@ fn parse_value(data: &[u8], pos: &mut usize) -> Result<ParsedValue, String> {
 
     let end = *pos;
 
-    Ok(ParsedValue {
-        value,
-        start,
-        end,
-    })
+    Ok(ParsedValue { value, start, end })
 }
 
 fn parse_string(data: &[u8], pos: &mut usize) -> Result<Bencode, String> {
@@ -69,12 +57,9 @@ fn parse_string(data: &[u8], pos: &mut usize) -> Result<Bencode, String> {
         return Err("unterminated string length".into());
     }
 
-    let len_str = std::str::from_utf8(&data[start..*pos])
-        .map_err(|_| "invalid string length")?;
+    let len_str = std::str::from_utf8(&data[start..*pos]).map_err(|_| "invalid string length")?;
 
-    let len: usize = len_str
-        .parse()
-        .map_err(|_| "invalid string length")?;
+    let len: usize = len_str.parse().map_err(|_| "invalid string length")?;
 
     *pos += 1; // skip ':'
 
@@ -117,8 +102,7 @@ fn parse_dictionary(data: &[u8], pos: &mut usize) -> Result<Bencode, String> {
     while *pos < data.len() && data[*pos] != b'e' {
         let key = match parse_string(data, pos)? {
             Bencode::String(bytes) => {
-                String::from_utf8(bytes)
-                    .map_err(|_| "dictionary key is not utf8")?
+                String::from_utf8(bytes).map_err(|_| "dictionary key is not utf8")?
             }
             _ => unreachable!(),
         };

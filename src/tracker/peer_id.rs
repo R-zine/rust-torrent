@@ -1,4 +1,4 @@
-use rand::{RngExt};
+use rand::RngExt;
 
 /// Generates a 20-byte BitTorrent peer_id
 ///

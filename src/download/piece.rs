@@ -1,6 +1,8 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+use super::piece_buffer::PieceBuffer;
+
+#[derive(Debug, Clone)]
 pub enum PieceState {
     Missing,
-    Downloading,
-    Complete,
+    Downloading(PieceBuffer),
+    Done,
 }

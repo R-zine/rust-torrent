@@ -1,6 +1,6 @@
 pub mod bencode;
-pub mod metadata;
 pub mod hash;
+pub mod metadata;
 
 mod reader;
 
